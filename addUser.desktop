@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Exec=/bin/sh -c /home/step305/Door/AddUser/train.sh
+Hidden=false
+Name=addUser
+Comment=
+
