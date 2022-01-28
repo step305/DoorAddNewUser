@@ -6,8 +6,6 @@ import pickle
 from PIL import Image, ImageDraw
 import face_recognition
 from face_recognition.face_recognition_cli import image_files_in_folder
-import cv2
-import numpy as np
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
@@ -74,47 +72,7 @@ def train(train_dir, model_save_path=None, n_neighbors=None, knn_algo='ball_tree
     return knn_clf
 
 
-def transform_frame(temp_image, empty_frame):
-    pre_frame = empty_frame
-    angle = 110
-    (he, we, c) = empty_frame.shape
-    empty_frame_yc = int(he / 2)
-    empty_frame_xc = int(we / 2)
-    (h, w, c) = temp_image.shape
-    half_h = int(h / 2)
-    half_w = int(w / 2)
-    pre_frame[
-    empty_frame_yc - half_h:
-    empty_frame_yc + half_h,
-    empty_frame_xc - half_w:
-    empty_frame_xc + half_w, :
-    ] = temp_image
-    transformation_matrix = cv2.getRotationMatrix2D((empty_frame_xc, empty_frame_yc), angle, 1)
-    transformed_image = cv2.warpAffine(pre_frame, transformation_matrix, (we, he))
-    return transformed_image
-
-
 if __name__ == "__main__":
     print("Training KNN classifier...")
-    aspect_x = 16
-    aspect_y = 10
-    final_frame_delta_minus = 86
-    diag = int(math.sqrt(aspect_x ** 2 + aspect_y ** 2))
-    step = int(1050 / diag) - 1
-    cam_resize_x = step * aspect_x
-    cam_resize_y = step * aspect_y
-    window_name = 'Video'
-    cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
-    cv2.setWindowProperty(window_name, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
-    final_frame = np.zeros((1050, 1680, 3), np.uint8)
-    black_frame = np.zeros((1050, 1680, 3), np.uint8)
-    rot_frame = np.zeros((cam_resize_y, cam_resize_x, 3), np.uint8)
-    rot_frame = cv2.putText(rot_frame, '...wait...', (int(cam_resize_x / 3), int(cam_resize_y / 2)),
-                            cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, cv2.LINE_AA)
-    rot_frame = transform_frame(rot_frame, black_frame)
-    final_frame[0:1050, 0: 0 + 1050 - final_frame_delta_minus] = rot_frame[:, final_frame_delta_minus:]
-    cv2.imshow(window_name, final_frame)
-
     classifier = train("KnownFaces/", model_save_path="trained_knn_model.clf", n_neighbors=2)
     print("Training complete!")
-    cv2.destroyAllWindows()

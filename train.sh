@@ -16,13 +16,3 @@ mkdir "/home/step305/Door/AddUser/KnownFaces/${id}${n}"
 cp "/home/step305/Door/AddUser/NewUser/"* "/home/step305/Door/AddUser/KnownFaces/${id}${n}/"
 cp "/home/step305/Door/AddUser/cardID.txt" "/home/step305/Door/AddUser/KnownFaces/${id}${n}/cardID.txt"
 rm "/home/step305/Door/AddUser/NewUser/"*
-
-python3 face_train.py
-
-rm -rf "/home/step305/Door/KnownFaces"
-
-cp -r "/home/step305/Door/AddUser/KnownFaces" "/home/step305/Door/"
-
-rm "/home/step305/Door/trained_knn_model.clf"
-
-cp "/home/step305/Door/AddUser/trained_knn_model.clf" "/home/step305/Door/trained_knn_model.clf"
